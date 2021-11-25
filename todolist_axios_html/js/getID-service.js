@@ -24,11 +24,11 @@ export default class ListTaskService {
             method: "GET",
         });
     }
-    updateTaskAPI(id, taskObj) {
+    updateTaskAPI(id, task) {
         return axios({
             url: `https://6183cae791d76c00172d1b5b.mockapi.io/api/toDoList/${id}`,
             method: "PUT",
-            data: taskObj,
-        })
+            data: task,
+        });
     }
 }

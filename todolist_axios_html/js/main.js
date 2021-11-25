@@ -8,25 +8,25 @@ const getEleClass = (cla) => document.getElementsByClassName(cla);
  * Lấy Data từ API
  */
 const fetchData = () => {
-    listTaskService.getListTaskAPI()
-        .then((result) => {
-            console.log(result.data);
-            renderData(result.data);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+  listTaskService.getListTaskAPI()
+    .then((result) => {
+      console.log(result.data);
+      renderData(result.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
 }
 fetchData();
 /**
  * HIển thị Data
  */
 const renderData = (arr) => {
-    let listToDo = "";
-    let listComplete = "";
-    arr?.forEach((task) => {
-        if (task.status == "todo") {
-            listToDo += `
+  let listToDo = "";
+  let listComplete = "";
+  arr?.forEach((task) => {
+    if (task.status == "todo") {
+      listToDo += `
             <li>
             <span>${task.textTask}</span>
             <div class="buttons">
@@ -42,9 +42,9 @@ const renderData = (arr) => {
               </button>
             </div>
           </li> `
-        }
-        if (task.status == "completed") {
-            listComplete += `
+    }
+    if (task.status == "completed") {
+      listComplete += `
             <li>
             <span>${task.textTask}</span>
             <div class="buttons">
@@ -61,10 +61,10 @@ const renderData = (arr) => {
             </div>
           </li>
           `
-        }
-    });
-    getEle("todo").innerHTML = listToDo;
-    getEle("completed").innerHTML = listComplete;
+    }
+  });
+  getEle("todo").innerHTML = listToDo;
+  getEle("completed").innerHTML = listComplete;
 }
 
 /**
@@ -72,14 +72,14 @@ const renderData = (arr) => {
  */
 
 function deleteTask(id) {
-    listTaskService.deleteTaskAPI(id)
-        .then(() => {
-            alert("delete success!");
-            fetchData();
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+  listTaskService.deleteTaskAPI(id)
+    .then(() => {
+      alert("delete success!");
+      fetchData();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 window.deleteTask = deleteTask;
 
@@ -89,17 +89,17 @@ window.deleteTask = deleteTask;
 
 function addTaks() {
 
-    const textTask = getEle("newTask").value;
+  const textTask = getEle("newTask").value;
 
-    const taskObj = new Tasks("", textTask, "todo")
-    listTaskService.addTaskAPI(taskObj)
-        .then(() => {
-            alert("Add Success!")
-            fetchData();
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+  const task = new Tasks("", textTask, "todo")
+  listTaskService.addTaskAPI(task)
+    .then(() => {
+      alert("Add Success!")
+      fetchData();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 window.addTaks = addTaks;
 
@@ -108,7 +108,7 @@ window.addTaks = addTaks;
  * Lấy Task bằng ID
  */
 const getTask = (id, status) => {
-    const buttonUpdate = `
+  const buttonUpdate = `
     <input
           id="newTask"
           type="text"
@@ -118,16 +118,17 @@ const getTask = (id, status) => {
         <i class="fa fa-check"></i>
     </button>
 `;
-    getEleClass("card__add")[0].innerHTML = buttonUpdate;
-    listTaskService.getTaskAPI(id)
-        .then((result) => {
-            // console.log(result);
-            getEle("newTask").value = result.data.textTask;
-
-        })
-        .catch((error) => {
-            alert(error);
-        })
+  getEleClass("card__add")[0].innerHTML = buttonUpdate;
+  listTaskService.getTaskAPI(id)
+    .then((result) => {
+      console.log(result);
+      getEle("newTask").value = result.data.textTask;
+      status = result.data.status;
+      console.log(status)
+    })
+    .catch((error) => {
+      alert(error);
+    })
 }
 window.getTask = getTask;
 
@@ -136,19 +137,19 @@ window.getTask = getTask;
  * Update Task
  */
 const updateTask = (id, status) => {
-    const textTask = getEle("newTask").value;
-    
-    const taskObj = new Tasks("", textTask, statusTask)
-    console.log(taskObj);
-    listTaskService.updateTaskAPI(id, taskObj)
-        .then((result) => {
-            console.log(result);
-            fetchData();
-            alert("Update success!");
-            // location.reload();
-        })
-        .catch((error) => {
-            alert(error);
-        });
+  const textTask = getEle("newTask").value;
+
+  const task = new Tasks("", textTask, status)
+  console.log(task);
+  listTaskService.updateTaskAPI(id, task)
+    .then((result) => {
+      console.log(result);
+      fetchData();
+      alert("Update success!");
+      // location.reload();
+    })
+    .catch((error) => {
+      alert(error);
+    });
 }
 window.updateTask = updateTask;
