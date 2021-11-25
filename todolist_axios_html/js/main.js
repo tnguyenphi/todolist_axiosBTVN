@@ -33,10 +33,10 @@ const renderData = (arr) => {
               <button class="remove" onclick="deleteTask(${task.id})">
                 <i class="fa fa-trash-alt"></i>
               </button>
-              <button class="edit" onclick="getTask(${task.id})">
+              <button class="edit" onclick="getTask(${task.id}),'${task.status}'">
                 <i class="fa fa-edit"></i>
               </button>
-              <button class="complete">
+              <button class="complete" onclick="changeState(${task.id}, '${task.textTask}', '${task.status}')">
                 <i class="far fa-check-circle"></i>
                 <i class="fas fa-check-circle"></i>
               </button>
@@ -51,10 +51,10 @@ const renderData = (arr) => {
               <button class="remove" onclick="deleteTask(${task.id})">
                 <i class="fa fa-trash-alt"></i>
               </button>
-              <button class="edit" onclick="getTask(${task.id})">
+              <button class="edit" onclick="getTask(${task.id},'${task.status}')">
                 <i class="fa fa-edit"></i>
               </button>
-              <button class="complete">
+              <button class="complete" onclick="changeState(${task.id}, '${task.textTask}', '${task.status}')">
                 <i class="far fa-check-circle"></i>
                 <i class="fas fa-check-circle"></i>
               </button>
@@ -121,10 +121,11 @@ const getTask = (id, status) => {
   getEleClass("card__add")[0].innerHTML = buttonUpdate;
   listTaskService.getTaskAPI(id)
     .then((result) => {
-      console.log(result);
+      // console.log(result);
+      // let status = "";
       getEle("newTask").value = result.data.textTask;
-      status = result.data.status;
-      console.log(status)
+      // status = result.data.status;
+      // console.log(result.data.status);
     })
     .catch((error) => {
       alert(error);
@@ -137,13 +138,18 @@ window.getTask = getTask;
  * Update Task
  */
 const updateTask = (id, status) => {
+  
   const textTask = getEle("newTask").value;
-
+  
+  listTaskService.getTaskAPI(id)
+  .then((result)=>{
+    console.log(result.data.status);
+  })
   const task = new Tasks("", textTask, status)
-  console.log(task);
-  listTaskService.updateTaskAPI(id, task)
+  console.log(task.status);
+  listTaskService.updateTaskAPI(id,task)
     .then((result) => {
-      console.log(result);
+      console.log(result.data.status);
       fetchData();
       alert("Update success!");
       // location.reload();
@@ -153,3 +159,23 @@ const updateTask = (id, status) => {
     });
 }
 window.updateTask = updateTask;
+
+const changeState = async (id, textTask, status) => {
+  const task = new Tasks (id, textTask, status);
+  // console.log(task);
+  const taskDetail = await listTaskService.getTaskAPI(id);
+
+  if (taskDetail.data.status == "todo") {
+    task.status = "completed";
+  }
+  if (taskDetail.data.status == "completed") {
+    task.status = "todo";
+  }
+  // console.log(taskObj);
+
+  const result = await listTaskService.updateTaskAPI(id, task);
+  if (result.status == 200) {
+    fetchData();
+  }
+}
+window.changeState = changeState;
