@@ -33,7 +33,7 @@ const renderData = (arr) => {
               <button class="remove" onclick="deleteTask(${task.id})">
                 <i class="fa fa-trash-alt"></i>
               </button>
-              <button class="edit" onclick="getTask(${task.id}),'${task.status}'">
+              <button class="edit" onclick="getTask(${task.id},'${task.status}')">
                 <i class="fa fa-edit"></i>
               </button>
               <button class="complete" onclick="changeState(${task.id}, '${task.textTask}', '${task.status}')">
