@@ -1,13 +1,32 @@
 import ListTaskService from "../js/getID-service.js";
 import Tasks from "../js/Tasks.js";
+import Validation from "../js/Validation.js";
+
 const listTaskService = new ListTaskService();
+const validation = new Validation();
+
 
 const getEle = (id) => document.getElementById(id);
 const getEleClass = (cla) => document.getElementsByClassName(cla);
 /**
  * Lấy Data từ API
  */
+// let isLoading = true;
+// const checkLoading = (isLoading) => {
+//   if (isLoading) {
+//     getEle("myBody").classList.add("loading");
+//     getEleClass("card")[0].style.display = "none";
+//   }
+//   if (isLoading) {
+//     getEle("myBody").classList.remove("loading");
+//     getEleClass("card")[0].style.display = "block";
+//   }
+// }
+
+// lấy Dât
 const fetchData = () => {
+  // isLoading = true;
+  // checkLoading(isLoading);
   listTaskService.getListTaskAPI()
     .then((result) => {
       console.log(result.data);
@@ -88,18 +107,21 @@ window.deleteTask = deleteTask;
  */
 
 function addTaks() {
-
   const textTask = getEle("newTask").value;
+  let isValid = true ;
+  isValid &= validation.checkEmpty(textTask, "Task Không được để trống", "announce");
+  if (isValid){
 
-  const task = new Tasks("", textTask, "todo")
-  listTaskService.addTaskAPI(task)
-    .then(() => {
-      alert("Add Success!")
-      fetchData();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    const task = new Tasks("", textTask, "todo")
+    listTaskService.addTaskAPI(task)
+      .then(() => {
+        alert("Add Success!")
+        fetchData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 }
 window.addTaks = addTaks;
 
@@ -138,30 +160,34 @@ window.getTask = getTask;
  * Update Task
  */
 const updateTask = (id, status) => {
-  
+
   const textTask = getEle("newTask").value;
-  
-  listTaskService.getTaskAPI(id)
-  .then((result)=>{
-    console.log(result.data.status);
-  })
+  let isValid = true ;
+  isValid &= validation.checkEmpty(textTask, "Task Không được để trống", "announce");
+  if (isValid){
+    listTaskService.getTaskAPI(id)
+    .then((result) => {
+      console.log(result.data.status);
+    })
   const task = new Tasks("", textTask, status)
   console.log(task.status);
-  listTaskService.updateTaskAPI(id,task)
+  listTaskService.updateTaskAPI(id, task)
     .then((result) => {
       console.log(result.data.status);
       fetchData();
       alert("Update success!");
-      // location.reload();
+      location.reload();
     })
     .catch((error) => {
       alert(error);
     });
+  }
+
 }
 window.updateTask = updateTask;
 
 const changeState = async (id, textTask, status) => {
-  const task = new Tasks (id, textTask, status);
+  const task = new Tasks(id, textTask, status);
   // console.log(task);
   const taskDetail = await listTaskService.getTaskAPI(id);
 
